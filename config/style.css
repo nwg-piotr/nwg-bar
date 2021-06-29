@@ -1,0 +1,40 @@
+window {
+        background-color: rgba (0, 0, 0, 0.0)
+}
+
+/* Outer bar container inside the window */
+#outer-box {
+	margin: 5px
+}
+
+/* Inner bar container inside the window */
+#inner-box {
+	background-color: rgba (0, 0, 0, 0.85);
+	border-radius: 10px;
+	border-style: none;
+	border-width: 1px;
+	border-color: rgba (156, 142, 122, 0.7);
+	padding: 5px;
+	margin: 5px
+}
+
+button, image {
+	background: none;
+	border-style: none;
+	box-shadow: none;
+	color: #eee
+}
+
+button {
+	padding-left: 10px;
+	padding-right: 10px;
+	margin: 5px
+}
+
+button:hover {
+	background-color: rgba (255, 255, 255, 0.1)
+}
+
+button:focus {
+	box-shadow: 0 0 2px;
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "label": "Lock",
+    "exec": "swaylock -f -c 000000",
+    "icon": "/home/piotr/.config/nwg-launchers/nwgbar/system-lock-screen.svg"
+  },
+  {
+    "label": "Logout",
+    "exec": "swaymsg exit",
+    "icon": "/home/piotr/.config/nwg-launchers/nwgbar/system-log-out.svg"
+  },
+  {
+    "label": "Reboot",
+    "exec": "systemctl reboot",
+    "icon": "/home/piotr/.config/nwg-launchers/nwgbar/system-reboot.svg"
+  },
+  {
+    "label": "Shutdown",
+    "exec": "systemctl -i poweroff",
+    "icon": "/home/piotr/.config/nwg-launchers/nwgbar/system-shutdown.svg"
+  }
+]
