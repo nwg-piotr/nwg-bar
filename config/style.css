@@ -4,7 +4,7 @@ window {
 
 /* Outer bar container inside the window */
 #outer-box {
-	margin: 5px
+	margin: 0px
 }
 
 /* Inner bar container inside the window */
@@ -20,9 +20,8 @@ window {
 
 button, image {
 	background: none;
-	border-style: none;
-	box-shadow: none;
-	color: #eee
+	border: none;
+	box-shadow: none
 }
 
 button {

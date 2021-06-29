@@ -50,6 +50,7 @@ var marginBottom = flag.Int("mb", 0, "Margin Bottom")
 var cssFileName = flag.String("s", "style.css", "csS file name")
 var templateFileName = flag.String("t", "bar.json", "Template file name")
 var displayVersion = flag.Bool("v", false, "display Version information")
+var exclusiveZone = flag.Bool("x", false, "open on top layer witch eXclusive zone")
 
 func main() {
 	flag.Parse()
@@ -182,8 +183,13 @@ func main() {
 	layershell.SetMargin(win, layershell.LAYER_SHELL_EDGE_RIGHT, *marginRight)
 	layershell.SetMargin(win, layershell.LAYER_SHELL_EDGE_BOTTOM, *marginBottom)
 
-	layershell.SetLayer(win, layershell.LAYER_SHELL_LAYER_OVERLAY)
-	layershell.SetExclusiveZone(win, -1)
+	if !*exclusiveZone {
+		layershell.SetLayer(win, layershell.LAYER_SHELL_LAYER_OVERLAY)
+		layershell.SetExclusiveZone(win, -1)
+	} else {
+		layershell.SetLayer(win, layershell.LAYER_SHELL_LAYER_TOP)
+		layershell.SetExclusiveZone(win, 0)
+	}
 
 	layershell.SetKeyboardMode(win, layershell.LAYER_SHELL_KEYBOARD_MODE_EXCLUSIVE)
 
