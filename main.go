@@ -12,31 +12,44 @@ import (
 	"syscall"
 
 	"github.com/allan-simon/go-singleinstance"
-	/*"github.com/gotk3/gotk3/gtk"
 	"github.com/dlasky/gotk3-layershell/layershell"
 	"github.com/gotk3/gotk3/gdk"
 	"github.com/gotk3/gotk3/glib"
-	"github.com/gotk3/gotk3/gtk"*/)
+	"github.com/gotk3/gotk3/gtk"
+)
 
 const version = "0.0.1"
 
 var (
-	configDirectory string
-	dataHome        string
-	buttons         []Button
+	configDirectory  string
+	dataHome         string
+	buttons          []Button
+	src              glib.SourceHandle
+	outerOrientation gtk.Orientation
+	innerOrientation gtk.Orientation
 )
 
 type Button struct {
-	Name string
-	Exec string
-	Icon string
+	Icon  string
+	Label string
+	Exec  string
 }
 
 // Flags
-var displayVersion = flag.Bool("v", false, "display Version information")
+var alignment = flag.String("a", "middle", "Alignment in full width/height: \"start\" or \"end\"")
+var full = flag.Bool("f", false, "take Full screen width/height")
+var imgSize = flag.Int("i", 48, "Icon size")
+var targetOutput = flag.String("o", "", "name of Output to display the bar on")
+var position = flag.String("p", "center", "Position: \"bottom\", \"top\", \"left\" or \"right\"")
 
-//var cssFileName = flag.String("s", "style.css", "Css file name")
+var marginTop = flag.Int("mt", 0, "Margin Top")
+var marginLeft = flag.Int("ml", 0, "Margin Left")
+var marginRight = flag.Int("mr", 0, "Margin Right")
+var marginBottom = flag.Int("mb", 0, "Margin Bottom")
+
+var cssFileName = flag.String("s", "style.css", "csS file name")
 var templateFileName = flag.String("t", "bar.json", "Template file name")
+var displayVersion = flag.Bool("v", false, "display Version information")
 
 func main() {
 	flag.Parse()
@@ -54,7 +67,7 @@ func main() {
 			s := <-signalChan
 			if s == syscall.SIGTERM {
 				println("SIGTERM received, bye bye!")
-				//gtk.MainQuit()
+				gtk.MainQuit()
 			}
 		}
 	}()
@@ -100,4 +113,139 @@ func main() {
 		json.Unmarshal([]byte(templateJson), &buttons)
 		println(fmt.Sprintf("%v items loaded from %s", len(buttons), p))
 	}
+
+	// load style sheet
+	cssFile := filepath.Join(configDirectory, *cssFileName)
+
+	gtk.Init(nil)
+
+	cssProvider, _ := gtk.CssProviderNew()
+
+	err = cssProvider.LoadFromPath(cssFile)
+	if err != nil {
+		fmt.Printf("%s file not found, using GTK styling\n", cssFile)
+	} else {
+		fmt.Printf("Using style: %s\n", cssFile)
+		screen, _ := gdk.ScreenGetDefault()
+		gtk.AddProviderForScreen(screen, cssProvider, gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+	}
+
+	win, err := gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
+	if err != nil {
+		log.Fatal("Unable to create window:", err)
+	}
+
+	layershell.InitForWindow(win)
+
+	// if -o argument given
+	var output2mon map[string]*gdk.Monitor
+	if *targetOutput != "" {
+		// We want to assign layershell to a monitor, but we only know the output name!
+		output2mon, err = mapOutputs()
+		if err == nil {
+			layershell.SetMonitor(win, output2mon[*targetOutput])
+		} else {
+			println(err)
+		}
+	}
+
+	if *position == "bottom" || *position == "top" {
+		if *position == "bottom" {
+			layershell.SetAnchor(win, layershell.LAYER_SHELL_EDGE_BOTTOM, true)
+		} else {
+			layershell.SetAnchor(win, layershell.LAYER_SHELL_EDGE_TOP, true)
+		}
+
+		outerOrientation = gtk.ORIENTATION_VERTICAL
+		innerOrientation = gtk.ORIENTATION_HORIZONTAL
+
+		layershell.SetAnchor(win, layershell.LAYER_SHELL_EDGE_LEFT, *full)
+		layershell.SetAnchor(win, layershell.LAYER_SHELL_EDGE_RIGHT, *full)
+	}
+
+	if *position == "left" || *position == "right" {
+		if *position == "left" {
+			layershell.SetAnchor(win, layershell.LAYER_SHELL_EDGE_LEFT, true)
+		} else {
+			layershell.SetAnchor(win, layershell.LAYER_SHELL_EDGE_RIGHT, true)
+		}
+
+		layershell.SetAnchor(win, layershell.LAYER_SHELL_EDGE_TOP, *full)
+		layershell.SetAnchor(win, layershell.LAYER_SHELL_EDGE_BOTTOM, *full)
+
+		outerOrientation = gtk.ORIENTATION_HORIZONTAL
+		innerOrientation = gtk.ORIENTATION_VERTICAL
+	}
+
+	layershell.SetMargin(win, layershell.LAYER_SHELL_EDGE_TOP, *marginTop)
+	layershell.SetMargin(win, layershell.LAYER_SHELL_EDGE_LEFT, *marginLeft)
+	layershell.SetMargin(win, layershell.LAYER_SHELL_EDGE_RIGHT, *marginRight)
+	layershell.SetMargin(win, layershell.LAYER_SHELL_EDGE_BOTTOM, *marginBottom)
+
+	layershell.SetLayer(win, layershell.LAYER_SHELL_LAYER_OVERLAY)
+	layershell.SetExclusiveZone(win, -1)
+
+	win.Connect("destroy", func() {
+		gtk.MainQuit()
+	})
+
+	// Close the window on leave, but not immediately, to avoid accidental closes
+	win.Connect("leave-notify-event", func() {
+		src = glib.TimeoutAdd(uint(500), func() bool {
+			gtk.MainQuit()
+			src = 0
+			return false
+		})
+	})
+
+	win.Connect("enter-notify-event", func() {
+		cancelClose()
+	})
+
+	outerBox, _ := gtk.BoxNew(outerOrientation, 0)
+	outerBox.SetProperty("name", "outer-box")
+	win.Add(outerBox)
+
+	alignmentBox, _ := gtk.BoxNew(innerOrientation, 0)
+	outerBox.PackStart(alignmentBox, true, true, 0)
+
+	mainBox, _ := gtk.BoxNew(innerOrientation, 0)
+	mainBox.SetHomogeneous(true)
+	mainBox.SetProperty("name", "inner-box")
+
+	if *alignment == "start" {
+		alignmentBox.PackStart(mainBox, false, true, 0)
+	} else if *alignment == "end" {
+		alignmentBox.PackEnd(mainBox, false, true, 0)
+	} else {
+		alignmentBox.PackStart(mainBox, true, false, 0)
+	}
+
+	for _, b := range buttons {
+		button, _ := gtk.ButtonNew()
+		button.SetAlwaysShowImage(true)
+		button.SetImagePosition(gtk.POS_TOP)
+
+		pixbuf, err := createPixbuf(b.Icon, *imgSize)
+		var img *gtk.Image
+		if err == nil {
+			img, _ = gtk.ImageNewFromPixbuf(pixbuf)
+		} else {
+			img, _ = gtk.ImageNewFromIconName("image-missing", gtk.ICON_SIZE_INVALID)
+		}
+		button.SetImage(img)
+
+		if b.Label != "" {
+			button.SetLabel(b.Label)
+		}
+
+		button.Connect("enter-notify-event", func() {
+			cancelClose()
+		})
+
+		mainBox.PackStart(button, true, true, 0)
+	}
+
+	win.ShowAll()
+	gtk.Main()
 }

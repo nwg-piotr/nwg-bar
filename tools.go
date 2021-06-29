@@ -1,10 +1,19 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
+	"strings"
+	"time"
+
+	"github.com/gotk3/gotk3/gdk"
+	"github.com/gotk3/gotk3/glib"
+	"github.com/gotk3/gotk3/gtk"
+	"github.com/joshuarubin/go-sway"
 )
 
 func tempDir() string {
@@ -84,4 +93,73 @@ func copyFile(src, dst string) error {
 		return err
 	}
 	return os.Chmod(dst, srcinfo.Mode())
+}
+
+func mapOutputs() (map[string]*gdk.Monitor, error) {
+	result := make(map[string]*gdk.Monitor)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+	defer cancel()
+
+	client, err := sway.New(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	outputs, err := client.GetOutputs(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	display, err := gdk.DisplayGetDefault()
+	if err != nil {
+		return nil, err
+	}
+
+	num := display.GetNMonitors()
+	for i := 0; i < num; i++ {
+		monitor, _ := display.GetMonitor(i)
+		geometry := monitor.GetGeometry()
+		// assign output to monitor on the basis of the same x, y coordinates
+		for _, output := range outputs {
+			if int(output.Rect.X) == geometry.GetX() && int(output.Rect.Y) == geometry.GetY() {
+				result[output.Name] = monitor
+			}
+		}
+	}
+	return result, nil
+}
+
+/*
+Window on-leave-notify event hides the dock with glib Timeout 500 ms.
+We might have left the window by accident, so let's clear the timeout if window re-entered.
+Furthermore - hovering a button triggers window on-leave-notify event, and the timeout
+needs to be cleared as well.
+*/
+func cancelClose() {
+	if src > 0 {
+		glib.SourceRemove(src)
+		src = 0
+	}
+}
+
+func createPixbuf(icon string, size int) (*gdk.Pixbuf, error) {
+	if strings.HasPrefix(icon, "/") {
+		pixbuf, err := gdk.PixbufNewFromFileAtSize(icon, size, size)
+		if err != nil {
+			println(err)
+			return nil, err
+		}
+		return pixbuf, nil
+	}
+
+	iconTheme, err := gtk.IconThemeGetDefault()
+	if err != nil {
+		log.Fatal("Couldn't get default theme: ", err)
+	}
+	pixbuf, err := iconTheme.LoadIcon(icon, size, gtk.ICON_LOOKUP_FORCE_SIZE)
+	if err != nil {
+		return nil, err
+	}
+	return pixbuf, nil
 }
