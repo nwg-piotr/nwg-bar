@@ -185,6 +185,8 @@ func main() {
 	layershell.SetLayer(win, layershell.LAYER_SHELL_LAYER_OVERLAY)
 	layershell.SetExclusiveZone(win, -1)
 
+	layershell.SetKeyboardMode(win, layershell.LAYER_SHELL_KEYBOARD_MODE_EXCLUSIVE)
+
 	win.Connect("destroy", func() {
 		gtk.MainQuit()
 	})
@@ -200,6 +202,13 @@ func main() {
 
 	win.Connect("enter-notify-event", func() {
 		cancelClose()
+	})
+
+	win.Connect("key-release-event", func(window *gtk.Window, event *gdk.Event) {
+		key := &gdk.EventKey{Event: event}
+		if key.KeyVal() == gdk.KEY_Escape {
+			gtk.MainQuit()
+		}
 	})
 
 	outerBox, _ := gtk.BoxNew(outerOrientation, 0)
