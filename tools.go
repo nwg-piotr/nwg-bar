@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"strings"
 	"time"
 
@@ -162,4 +163,51 @@ func createPixbuf(icon string, size int) (*gdk.Pixbuf, error) {
 		return nil, err
 	}
 	return pixbuf, nil
+}
+
+func launch(command string) {
+	// trim % and everything afterwards
+	if strings.Contains(command, "%") {
+		cutAt := strings.Index(command, "%")
+		if cutAt != -1 {
+			command = command[:cutAt-1]
+		}
+	}
+
+	elements := strings.Split(command, " ")
+
+	// find prepended env variables, if any
+	envVarsNum := strings.Count(command, "=")
+	var envVars []string
+
+	cmdIdx := 0
+	lastEnvVarIdx := 0
+
+	if envVarsNum > 0 {
+		for idx, item := range elements {
+			if strings.Contains(item, "=") {
+				lastEnvVarIdx = idx
+				envVars = append(envVars, item)
+			}
+		}
+		cmdIdx = lastEnvVarIdx + 1
+	}
+
+	cmd := exec.Command(elements[cmdIdx], elements[1+cmdIdx:]...)
+
+	// set env variables
+	if len(envVars) > 0 {
+		cmd.Env = os.Environ()
+		cmd.Env = append(cmd.Env, envVars...)
+	}
+
+	msg := fmt.Sprintf("env vars: %s; command: '%s'; args: %s\n", envVars, elements[cmdIdx], elements[1+cmdIdx:])
+	println(msg)
+
+	go cmd.Run()
+
+	glib.TimeoutAdd(uint(150), func() bool {
+		gtk.MainQuit()
+		return false
+	})
 }

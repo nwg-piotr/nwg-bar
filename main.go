@@ -252,6 +252,12 @@ func main() {
 			cancelClose()
 		})
 
+		exec := b.Exec
+
+		button.Connect("clicked", func() {
+			launch(exec)
+		})
+
 		mainBox.PackStart(button, true, true, 0)
 	}
 
