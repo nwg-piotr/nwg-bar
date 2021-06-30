@@ -58,6 +58,8 @@ Usage of nwg-bar:
   -x	open on top layer witch eXclusive zone
 ```
 
+*NOTE: for now the `-o` argument works on sway only.*
+
 ## Templates
 
 Templates in JSON format should be placed in the `~/.config/nwg-bar` folder. The default `bar.json` template creates
