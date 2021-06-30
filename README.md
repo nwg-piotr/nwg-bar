@@ -1,7 +1,16 @@
 # nwg-bar
 
-Golang replacement to the `nwgbar` command (a part of [nwg-launchers](https://github.com/nwg-piotr/nwg-launchers)),
-with some improvements. Aimed at sway, works with wlroots-based compositors only.
+This program is a part of the [nwg-shell](https://github.com/nwg-piotr/nwg-shell) project.
+
+nwg-bar is a Golang replacement to the `nwgbar` command (a part of
+[nwg-launchers](https://github.com/nwg-piotr/nwg-launchers)), with some improvements. Aimed at sway, works with
+wlroots-based compositors only.
+
+The `nwg-bar` command creates a button bar on the basis of a JSON template placed in the `~/.config/nwg-bar/` folder.
+By default the command displays a horizontal bar in the center
+of the screen. Use command line arguments to change the placement.
+
+![screenshot.png](https://scrot.cloud/images/2021/07/01/screenshot.png)
 
 ## Installation
 
@@ -48,3 +57,43 @@ Usage of nwg-bar:
   -v	display Version information
   -x	open on top layer witch eXclusive zone
 ```
+
+## Templates
+
+Templates in JSON format should be placed in the `~/.config/nwg-bar` folder. The default `bar.json` template creates
+ sample Exit menu for sway on Arch Linux. You may adjust it to your system, and also add as many other templates,
+ as you need. Use the `-t somename.json` argument to specify the template name to use.
+
+ ```json
+ [
+  {
+    "label": "Lock",
+    "exec": "swaylock -f -c 000000",
+    "icon": "/usr/share/nwg-bar/images/system-lock-screen.svg"
+  },
+  {
+    "label": "Logout",
+    "exec": "swaymsg exit",
+    "icon": "/usr/share/nwg-bar/images/system-log-out.svg"
+  },
+  {
+    "label": "Reboot",
+    "exec": "systemctl reboot",
+    "icon": "/usr/share/nwg-bar/images/system-reboot.svg"
+  },
+  {
+    "label": "Shutdown",
+    "exec": "systemctl -i poweroff",
+    "icon": "/usr/share/nwg-bar/images/system-shutdown.svg"
+  }
+]
+ ```
+
+ - `label` field defines the button label;
+ - `exec` field defines the command to execute on button click;
+ - `icon` field specifies the button icon; you may use a system icon name, like e.g. `system-lock-screen`, or a path to .svg/.png file.
+
+ ## Styling
+
+ Edit the `~/.config/nwg-bar/style.css` file to change the bar appearance. You may also specify another .css file
+ (in the same folder) with the `-s somename.css` argument.
