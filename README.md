@@ -29,6 +29,8 @@ of the screen. Use command line arguments to change the placement.
 
 If your machine is x86_64, you may skip 2 and 3, and just install the provided binary with `sudo make install`.
 
+To uninstall run `sudo make uninstall`.
+
 ## Running
 
 ```text
