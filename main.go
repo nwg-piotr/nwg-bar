@@ -110,7 +110,7 @@ func main() {
 	} else {
 		// parse JSON to []Button
 		json.Unmarshal([]byte(templateJson), &buttons)
-		println(fmt.Sprintf("%v items loaded from %s", len(buttons), p))
+		println(fmt.Sprintf("%v items loaded from template %s", len(buttons), p))
 	}
 
 	// load style sheet
