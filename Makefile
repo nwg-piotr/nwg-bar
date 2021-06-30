@@ -12,6 +12,8 @@ build:
 install:
 	mkdir -p /usr/share/nwg-bar
 	cp config/* /usr/share/nwg-bar
+	mkdir -p /usr/share/nwg-bar/images
+	cp images/* /usr/share/nwg-bar/images
 	cp bin/nwg-bar /usr/bin
 
 uninstall:
