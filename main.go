@@ -144,7 +144,7 @@ func main() {
 		if err == nil {
 			layershell.SetMonitor(win, output2mon[*targetOutput])
 		} else {
-			println(err)
+			fmt.Println(err)
 		}
 	}
 
