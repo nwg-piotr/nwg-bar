@@ -96,12 +96,10 @@ func main() {
 
 	// Copy default config
 	if !pathExists(filepath.Join(configDirectory, "style.css")) {
-		res := copyFile(filepath.Join(dataHome, "nwg-bar/style.css"), filepath.Join(configDirectory, "style.css"))
-		fmt.Println(res)
+		copyFile(filepath.Join(dataHome, "nwg-bar/style.css"), filepath.Join(configDirectory, "style.css"))
 	}
 	if !pathExists(filepath.Join(configDirectory, "bar.json")) {
-		res := copyFile(filepath.Join(dataHome, "nwg-bar/bar.json"), filepath.Join(configDirectory, "bar.json"))
-		fmt.Println(res)
+		copyFile(filepath.Join(dataHome, "nwg-bar/bar.json"), filepath.Join(configDirectory, "bar.json"))
 	}
 
 	// load JSON template
