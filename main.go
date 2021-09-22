@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"syscall"
+	"strings"
 
 	"github.com/allan-simon/go-singleinstance"
 	"github.com/dlasky/gotk3-layershell/layershell"
@@ -103,28 +104,32 @@ func main() {
 	}
 
 	// load JSON template
-	p := filepath.Join(configDir(), *templateFileName)
-	templateJson, err := readTextFile(p)
+	if !strings.HasPrefix(*templateFileName, "/") {
+		*templateFileName = filepath.Join(configDirectory, *templateFileName)
+	}
+	templateJson, err := readTextFile(*templateFileName)
 	if err != nil {
 		log.Fatal(err)
 	} else {
 		// parse JSON to []Button
 		json.Unmarshal([]byte(templateJson), &buttons)
-		println(fmt.Sprintf("%v items loaded from template %s", len(buttons), p))
+		println(fmt.Sprintf("%v items loaded from template %s", len(buttons), *templateFileName))
 	}
 
 	// load style sheet
-	cssFile := filepath.Join(configDirectory, *cssFileName)
+	if !strings.HasPrefix(*cssFileName, "/") {
+		*cssFileName = filepath.Join(configDirectory, *cssFileName)
+	}
 
 	gtk.Init(nil)
 
 	cssProvider, _ := gtk.CssProviderNew()
 
-	err = cssProvider.LoadFromPath(cssFile)
+	err = cssProvider.LoadFromPath(*cssFileName)
 	if err != nil {
-		fmt.Printf("%s file not found, using GTK styling\n", cssFile)
+		fmt.Printf("%s file not found, using GTK styling\n", *cssFileName)
 	} else {
-		fmt.Printf("Using style: %s\n", cssFile)
+		fmt.Printf("Using style: %s\n", *cssFileName)
 		screen, _ := gdk.ScreenGetDefault()
 		gtk.AddProviderForScreen(screen, cssProvider, gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 	}
