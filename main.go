@@ -52,6 +52,7 @@ var cssFileName = flag.String("s", "style.css", "csS file name")
 var templateFileName = flag.String("t", "bar.json", "Template file name")
 var displayVersion = flag.Bool("v", false, "display Version information")
 var exclusiveZone = flag.Bool("x", false, "open on top layer witch eXclusive zone")
+var gtkTheme = flag.String("g", "", "GTK theme name")
 
 func main() {
 	flag.Parse()
@@ -122,6 +123,11 @@ func main() {
 	}
 
 	gtk.Init(nil)
+
+	if *gtkTheme != "" {
+		settings, _ := gtk.SettingsGetDefault()
+		settings.SetProperty("gtk-theme-name", *gtkTheme)
+	}
 
 	cssProvider, _ := gtk.CssProviderNew()
 
