@@ -9,8 +9,8 @@ import (
 	"os/signal"
 	"path/filepath"
 	"strconv"
-	"syscall"
 	"strings"
+	"syscall"
 
 	"github.com/allan-simon/go-singleinstance"
 	"github.com/dlasky/gotk3-layershell/layershell"
@@ -19,7 +19,7 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 )
 
-const version = "0.0.1"
+const version = "0.1.0"
 
 var (
 	configDirectory  string
@@ -124,9 +124,17 @@ func main() {
 
 	gtk.Init(nil)
 
+	settings, _ := gtk.SettingsGetDefault()
 	if *gtkTheme != "" {
-		settings, _ := gtk.SettingsGetDefault()
-		settings.SetProperty("gtk-theme-name", *gtkTheme)
+		err = settings.SetProperty("gtk-theme-name", *gtkTheme)
+		if err != nil {
+			fmt.Printf("Unable to set theme: %s", err)
+		} else {
+			fmt.Printf("User demanded theme: %s", *gtkTheme)
+		}
+	} else {
+		settings.SetProperty("gtk-application-prefer-dark-theme", true)
+		fmt.Println("Preferring dark theme variants")
 	}
 
 	cssProvider, _ := gtk.CssProviderNew()
