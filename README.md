@@ -10,6 +10,9 @@ The `nwg-bar` command creates a button bar on the basis of a JSON template place
 By default the command displays a horizontal bar in the center
 of the screen. Use command line arguments to change the placement.
 
+![image](https://user-images.githubusercontent.com/20579136/163154930-883140f3-0f69-481f-b07f-cbd4d4c75117.png)
+
+
 [![Packaging status](https://repology.org/badge/vertical-allrepos/nwg-bar.svg)](https://repology.org/project/nwg-bar/versions)
 
 ## Installation
