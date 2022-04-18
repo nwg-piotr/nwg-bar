@@ -256,6 +256,7 @@ func main() {
 	for _, b := range buttons {
 		button, _ := gtk.ButtonNew()
 		button.SetAlwaysShowImage(true)
+		button.SetProperty("use-underline", true)
 		button.SetImagePosition(gtk.POS_TOP)
 
 		pixbuf, err := createPixbuf(b.Icon, *imgSize)
