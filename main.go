@@ -19,7 +19,7 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 )
 
-const version = "0.1.0"
+const version = "0.1.1"
 
 var (
 	configDirectory  string
@@ -256,6 +256,7 @@ func main() {
 	for _, b := range buttons {
 		button, _ := gtk.ButtonNew()
 		button.SetAlwaysShowImage(true)
+		button.SetProperty("use-underline", true)
 		button.SetImagePosition(gtk.POS_TOP)
 
 		pixbuf, err := createPixbuf(b.Icon, *imgSize)
