@@ -1,6 +1,8 @@
 # nwg-bar
 
-This program is a part of the [nwg-shell](https://github.com/nwg-piotr/nwg-shell) project.
+This application is a part of the [nwg-shell](https://nwg-piotr.github.io/nwg-shell) project.
+
+**Contributing:** please read the [general contributing rules for the nwg-shell project](https://nwg-piotr.github.io/nwg-shell/contribution).
 
 nwg-bar is a Golang replacement to the `nwgbar` command (a part of
 [nwg-launchers](https://github.com/nwg-piotr/nwg-launchers)), with some improvements. Aimed at sway, works with
