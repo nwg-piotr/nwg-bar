@@ -137,6 +137,8 @@ func main() {
 		fmt.Println("Preferring dark theme variants")
 	}
 
+	screen, _ := gdk.ScreenGetDefault()
+
 	cssProvider, _ := gtk.CssProviderNew()
 
 	err = cssProvider.LoadFromPath(*cssFileName)
@@ -144,13 +146,17 @@ func main() {
 		fmt.Printf("%s file not found, using GTK styling\n", *cssFileName)
 	} else {
 		fmt.Printf("Using style: %s\n", *cssFileName)
-		screen, _ := gdk.ScreenGetDefault()
 		gtk.AddProviderForScreen(screen, cssProvider, gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 	}
 
 	win, err := gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
 	if err != nil {
 		log.Fatal("Unable to create window:", err)
+	}
+
+	visual, _ := screen.GetRGBAVisual()
+	if visual != nil && screen.IsComposited() {
+		win.SetVisual(visual)
 	}
 
 	layershell.InitForWindow(win)
