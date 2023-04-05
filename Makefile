@@ -7,7 +7,7 @@ get:
 	go get github.com/allan-simon/go-singleinstance
 
 build:
-	go build -o bin/nwg-bar .
+	go build -v -o bin/nwg-bar .
 
 install:
 	mkdir -p /usr/share/nwg-bar
