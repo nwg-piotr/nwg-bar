@@ -143,7 +143,7 @@ func main() {
 
 	err = cssProvider.LoadFromPath(*cssFileName)
 	if err != nil {
-		fmt.Printf("%s file not found, using GTK styling\n", *cssFileName)
+		fmt.Printf("%s file erroneous or not found, using GTK styling\n", *cssFileName)
 	} else {
 		fmt.Printf("Using style: %s\n", *cssFileName)
 		gtk.AddProviderForScreen(screen, cssProvider, gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
