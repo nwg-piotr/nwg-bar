@@ -173,6 +173,9 @@ func main() {
 		}
 	}
 
+	outerOrientation = gtk.ORIENTATION_VERTICAL
+	innerOrientation = gtk.ORIENTATION_HORIZONTAL
+
 	if *position == "bottom" || *position == "top" {
 		if *position == "bottom" {
 			layershell.SetAnchor(win, layershell.LAYER_SHELL_EDGE_BOTTOM, true)
@@ -245,7 +248,7 @@ func main() {
 	win.Add(outerBox)
 
 	alignmentBox, _ := gtk.BoxNew(innerOrientation, 0)
-	outerBox.PackStart(alignmentBox, true, true, 0)
+	outerBox.PackStart(alignmentBox, true, false, 0)
 
 	mainBox, _ := gtk.BoxNew(innerOrientation, 0)
 	mainBox.SetHomogeneous(true)
