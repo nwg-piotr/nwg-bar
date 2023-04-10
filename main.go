@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+        "os/user"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -76,7 +77,12 @@ func main() {
 	}()
 
 	// We want the same key/mouse binding to turn the bar off. Kill the running instance and exit.
-	lockFilePath := fmt.Sprintf("%s/nwg-bar.lock", tempDir())
+        currentUserId := "no-user"
+        currentUser, err := user.Current()
+        if err == nil {
+            currentUserId = currentUser.Uid
+        }
+	lockFilePath := fmt.Sprintf("%s/%s-nwg-bar.lock", tempDir(), currentUserId)
 	lockFile, err := singleinstance.CreateLockFile(lockFilePath)
 	if err != nil {
 		pid, err := readTextFile(lockFilePath)
