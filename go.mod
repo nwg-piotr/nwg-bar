@@ -4,9 +4,9 @@ go 1.20
 
 require (
 	github.com/allan-simon/go-singleinstance v0.0.0-20210120080615-d0997106ab37
-	github.com/dlasky/gotk3-layershell v0.0.0-20210331230524-5cca0b819261
+	github.com/dlasky/gotk3-layershell v0.0.0-20221218201547-1f6674a3f872
 	github.com/gotk3/gotk3 v0.6.1
-	github.com/joshuarubin/go-sway v0.0.4
+	github.com/joshuarubin/go-sway v1.2.0
 )
 
 require (
