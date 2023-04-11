@@ -5,7 +5,7 @@ This application is a part of the [nwg-shell](https://nwg-piotr.github.io/nwg-sh
 **Contributing:** please read the [general contributing rules for the nwg-shell project](https://nwg-piotr.github.io/nwg-shell/contribution).
 
 nwg-bar is a Golang replacement to the `nwgbar` command (a part of
-[nwg-launchers](https://github.com/nwg-piotr/nwg-launchers)), with some improvements. Aimed at sway, works with
+[nwg-launchers](https://github.com/nwg-piotr/nwg-launchers)), with some improvements. Originally aimed at sway, works with
 wlroots-based compositors only.
 
 The `nwg-bar` command creates a button bar on the basis of a JSON template placed in the `~/.config/nwg-bar/` folder.
@@ -21,7 +21,7 @@ of the screen. Use command line arguments to change the placement.
 
 ### Requirements
 
-- `go` 1.16 (just to build)
+- `go` 1.20
 - `gtk3`
 - `gtk-layer-shell`
 

@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
-        "os/user"
+	"os/user"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -20,7 +20,7 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 )
 
-const version = "0.1.2"
+const version = "0.1.3"
 
 var (
 	configDirectory  string
@@ -77,11 +77,11 @@ func main() {
 	}()
 
 	// We want the same key/mouse binding to turn the bar off. Kill the running instance and exit.
-        currentUserId := "no-user"
-        currentUser, err := user.Current()
-        if err == nil {
-            currentUserId = currentUser.Uid
-        }
+	currentUserId := "no-user"
+	currentUser, err := user.Current()
+	if err == nil {
+		currentUserId = currentUser.Uid
+	}
 	lockFilePath := fmt.Sprintf("%s/%s-nwg-bar.lock", tempDir(), currentUserId)
 	lockFile, err := singleinstance.CreateLockFile(lockFilePath)
 	if err != nil {
