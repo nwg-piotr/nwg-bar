@@ -1,3 +1,6 @@
+PREFIX ?= /usr
+DESTDIR ?= 
+
 get:
 	go get github.com/gotk3/gotk3
 	go get github.com/gotk3/gotk3/gdk
@@ -10,15 +13,15 @@ build:
 	go build -v -o bin/nwg-bar .
 
 install:
-	mkdir -p /usr/share/nwg-bar
-	cp config/* /usr/share/nwg-bar
-	mkdir -p /usr/share/nwg-bar/images
-	cp images/* /usr/share/nwg-bar/images
-	cp bin/nwg-bar /usr/bin
+	mkdir -p $(DESTDIR)$(PREFIX)/share/nwg-bar
+	cp config/* $(DESTDIR)$(PREFIX)/share/nwg-bar
+	mkdir -p $(DESTDIR)$(PREFIX)/share/nwg-bar/images
+	cp images/* $(DESTDIR)$(PREFIX)/share/nwg-bar/images
+	cp bin/nwg-bar $(DESTDIR)$(PREFIX)/bin
 
 uninstall:
-	rm -r /usr/share/nwg-bar
-	rm /usr/bin/nwg-bar
+	rm -r $(DESTDIR)$(PREFIX)/share/nwg-bar
+	rm $(DESTDIR)$(PREFIX)/bin/nwg-bar
 
 run:
 	go run .
