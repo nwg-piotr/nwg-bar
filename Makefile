@@ -17,7 +17,8 @@ install:
 	cp config/* $(DESTDIR)$(PREFIX)/share/nwg-bar
 	mkdir -p $(DESTDIR)$(PREFIX)/share/nwg-bar/images
 	cp images/* $(DESTDIR)$(PREFIX)/share/nwg-bar/images
-	cp bin/nwg-bar $(DESTDIR)$(PREFIX)/bin
+	mkdir -p $(DESTDIR)$(PREFIX)/bin
+	cp bin/nwg-bar $(DESTDIR)$(PREFIX)/bin/nwg-bar
 
 uninstall:
 	rm -r $(DESTDIR)$(PREFIX)/share/nwg-bar
