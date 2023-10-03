@@ -102,6 +102,8 @@ Templates in JSON format should be placed in the `~/.config/nwg-bar` folder. The
  - `exec` field defines the command to execute on button click;
  - `icon` field specifies the button icon; you may use a system icon name, like e.g. `system-lock-screen`, or a path to .svg/.png file.
 
+Use labels with uderscores (like `_Lock`, `_Reboot') to create keyboard shortcuts to the buttons. You will be able to access them with the `Alt` key.
+
  ## Styling
 
  Edit the `~/.config/nwg-bar/style.css` file to change the bar appearance. You may also specify another .css file
