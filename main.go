@@ -20,7 +20,7 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 )
 
-const version = "0.1.3"
+const version = "0.1.4"
 
 var (
 	configDirectory  string
@@ -270,18 +270,21 @@ func main() {
 
 	for _, b := range buttons {
 		button, _ := gtk.ButtonNew()
-		button.SetAlwaysShowImage(true)
 		button.SetProperty("use-underline", true)
-		button.SetImagePosition(gtk.POS_TOP)
 
-		pixbuf, err := createPixbuf(b.Icon, *imgSize)
-		var img *gtk.Image
-		if err == nil {
-			img, _ = gtk.ImageNewFromPixbuf(pixbuf)
-		} else {
-			img, _ = gtk.ImageNewFromIconName("image-missing", gtk.ICON_SIZE_INVALID)
+		if b.Icon != "" {
+			button.SetAlwaysShowImage(true)
+			button.SetImagePosition(gtk.POS_TOP)
+
+			pixbuf, err := createPixbuf(b.Icon, *imgSize)
+			var img *gtk.Image
+			if err == nil {
+				img, _ = gtk.ImageNewFromPixbuf(pixbuf)
+			} else {
+				img, _ = gtk.ImageNewFromIconName("image-missing", gtk.ICON_SIZE_INVALID)
+			}
+			button.SetImage(img)
 		}
-		button.SetImage(img)
 
 		if b.Label != "" {
 			button.SetLabel(b.Label)
