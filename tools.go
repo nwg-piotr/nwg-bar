@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -29,7 +28,7 @@ func tempDir() string {
 }
 
 func readTextFile(path string) (string, error) {
-	bytes, err := ioutil.ReadFile(path)
+	bytes, err := os.ReadFile(path)
 	if err != nil {
 		return "", err
 	}
@@ -41,7 +40,7 @@ func configDir() string {
 	if os.Getenv("XDG_CONFIG_HOME") != "" {
 		return (fmt.Sprintf("%s/nwg-bar", os.Getenv("XDG_CONFIG_HOME")))
 	}
-	return (fmt.Sprintf("%s/.config/nwg-bar", os.Getenv("HOME")))
+	return fmt.Sprintf("%s/.config/nwg-bar", os.Getenv("HOME"))
 }
 
 func getDataHome() string {
