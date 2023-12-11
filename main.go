@@ -134,13 +134,10 @@ func main() {
 	if *gtkTheme != "" {
 		err = settings.SetProperty("gtk-theme-name", *gtkTheme)
 		if err != nil {
-			fmt.Printf("Unable to set theme: %s", err)
+			fmt.Printf("Unable to set theme: %s\n", err)
 		} else {
-			fmt.Printf("User demanded theme: %s", *gtkTheme)
+			fmt.Printf("User demanded theme: %s\n", *gtkTheme)
 		}
-	} else {
-		settings.SetProperty("gtk-application-prefer-dark-theme", true)
-		fmt.Println("Preferring dark theme variants")
 	}
 
 	screen, _ := gdk.ScreenGetDefault()
