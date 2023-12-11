@@ -99,15 +99,21 @@ func main() {
 	dataHome = getDataHome()
 
 	configDirectory = configDir()
-	// will only be created if does not yet exist
+	// will only be created if it does not yet exist
 	createDir(configDirectory)
 
 	// Copy default config
 	if !pathExists(filepath.Join(configDirectory, "style.css")) {
-		copyFile(filepath.Join(dataHome, "nwg-bar/style.css"), filepath.Join(configDirectory, "style.css"))
+		err := copyFile(filepath.Join(dataHome, "nwg-bar/style.css"), filepath.Join(configDirectory, "style.css"))
+		if err != nil {
+			return
+		}
 	}
 	if !pathExists(filepath.Join(configDirectory, "bar.json")) {
-		copyFile(filepath.Join(dataHome, "nwg-bar/bar.json"), filepath.Join(configDirectory, "bar.json"))
+		err := copyFile(filepath.Join(dataHome, "nwg-bar/bar.json"), filepath.Join(configDirectory, "bar.json"))
+		if err != nil {
+			return
+		}
 	}
 
 	// load JSON template
@@ -119,8 +125,12 @@ func main() {
 		log.Fatal(err)
 	} else {
 		// parse JSON to []Button
-		json.Unmarshal([]byte(templateJson), &buttons)
-		println(fmt.Sprintf("%v items loaded from template %s", len(buttons), *templateFileName))
+		err := json.Unmarshal([]byte(templateJson), &buttons)
+		if err != nil {
+			return
+		} else {
+			println(fmt.Sprintf("%v items loaded from template %s", len(buttons), *templateFileName))
+		}
 	}
 
 	// load style sheet
