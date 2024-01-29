@@ -20,6 +20,9 @@ install:
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	cp bin/nwg-bar $(DESTDIR)$(PREFIX)/bin/nwg-bar
 
+	cp README.md $(DESTDIR)/usr/share/doc/nwg-bar
+	cp LICENSE $(DESTDIR)/usr/share/licenses/nwg-bar
+
 uninstall:
 	rm -r $(DESTDIR)$(PREFIX)/share/nwg-bar
 	rm $(DESTDIR)$(PREFIX)/bin/nwg-bar
