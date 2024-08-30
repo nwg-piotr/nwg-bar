@@ -106,12 +106,14 @@ func main() {
 	if !pathExists(filepath.Join(configDirectory, "style.css")) {
 		err := copyFile(filepath.Join(dataHome, "nwg-bar/style.css"), filepath.Join(configDirectory, "style.css"))
 		if err != nil {
+			log.Fatal("error copying default style.css: ", err)
 			return
 		}
 	}
 	if !pathExists(filepath.Join(configDirectory, "bar.json")) {
 		err := copyFile(filepath.Join(dataHome, "nwg-bar/bar.json"), filepath.Join(configDirectory, "bar.json"))
 		if err != nil {
+			log.Fatal("error copying default bar.json: ", err)
 			return
 		}
 	}
@@ -127,6 +129,7 @@ func main() {
 		// parse JSON to []Button
 		err := json.Unmarshal([]byte(templateJson), &buttons)
 		if err != nil {
+			log.Fatal("error parsing config: ", err)
 			return
 		} else {
 			println(fmt.Sprintf("%v items loaded from template %s", len(buttons), *templateFileName))
