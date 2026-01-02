@@ -307,7 +307,7 @@ func main() {
 		exec := b.Exec
 
 		button.Connect("clicked", func() {
-			launch(exec)
+			launch(os.ExpandEnv(exec))
 		})
 
 		mainBox.PackStart(button, true, true, 0)
