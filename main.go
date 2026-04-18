@@ -29,6 +29,8 @@ var (
 	src              glib.SourceHandle
 	outerOrientation gtk.Orientation
 	innerOrientation gtk.Orientation
+	cssFilePath      string
+	configFilePath   string
 )
 
 type Button struct {
@@ -104,14 +106,28 @@ func main() {
 
 	// Copy default config
 	if !pathExists(filepath.Join(configDirectory, "style.css")) {
-		err := copyFile(filepath.Join(dataHome, "nwg-bar/style.css"), filepath.Join(configDirectory, "style.css"))
+		if pathExists(filepath.Join(dataHome, "nwg-bar/style.css")) {
+			cssFilePath = filepath.Join(dataHome, "nwg-bar/style.css")
+		} else if pathExists("/usr/local/share/nwg-bar/style.css") {
+			cssFilePath = "/usr/local/share/nwg-bar/style.css"
+		} else {
+			cssFilePath = "/usr/share/nwg-bar/style.css"
+		}
+		err := copyFile(cssFilePath, filepath.Join(configDirectory, "style.css"))
 		if err != nil {
 			log.Fatal("error copying default style.css: ", err)
 			return
 		}
 	}
 	if !pathExists(filepath.Join(configDirectory, "bar.json")) {
-		err := copyFile(filepath.Join(dataHome, "nwg-bar/bar.json"), filepath.Join(configDirectory, "bar.json"))
+		if pathExists(filepath.Join(dataHome, "nwg-bar/bar.json")) {
+			configFilePath = filepath.Join(dataHome, "nwg-bar/bar.json")
+		} else if pathExists("/usr/local/share/nwg-bar/bar.json") {
+			configFilePath = "/usr/local/share/nwg-bar/bar.json"
+		} else {
+			configFilePath = "/usr/share/nwg-bar/bar.json"
+		}
+		err := copyFile(configFilePath, filepath.Join(configDirectory, "bar.json"))
 		if err != nil {
 			log.Fatal("error copying default bar.json: ", err)
 			return
